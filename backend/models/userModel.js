@@ -1,10 +1,7 @@
 const mongoose= require('mongoose')
 
 const userSchema = mongoose.Schema({
-    fullname: {
-        type:String,
-        required:[true, 'please add a name']
-    },
+   
     email: {
         type:String,
         required:[true, 'please add an email'],
@@ -14,18 +11,12 @@ const userSchema = mongoose.Schema({
         type:String,
         required:[true, 'please add a password']
     },
-    hobby: {
-        type:String,
-        required:[false, 'please add a hobby']
+    role: {
+        type:Number,
+        default:0,
+       
     },
-    address: {
-        type:String,
-        required:[true, 'please add a phone no']
-    },
-    phoneno:{
-        type:String,
-        required:[true, 'please add a phone no']
-    },
+   
 },
 {
     timestamps:true

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
-
+const CustemerProfile = require('../models/custemerprofileModel')
 const protect = asyncHandler(async (req, res, next) => {
   let token
 
@@ -32,5 +32,14 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new Error('Not authorized, no token')
   }
 })
+//custemer middleware
 
-module.exports = { protect }
+const isCustemer =  (req, res, next) => {
+  if (req.user.role === 0){
+    throw new Error('Not authorized, no custemer')
+
+  }
+  next();
+}
+
+module.exports = { protect ,isCustemer}

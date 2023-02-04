@@ -3,6 +3,8 @@ const dotenv =require('dotenv').config()
 const {errorHandler}=require('./middleware/errorMiddleware')
 const mongoose = require('mongoose')
 const userRoutes = require("./routes/userRoutes")
+const profileRoutes = require("./routes/profileRoutes")
+
 //const eventRoutes = require("./routes/eventRoutes")
 //const connectDB=require('./config/db')
 //const port= process.env.Port || 5000
@@ -19,6 +21,7 @@ app.use(express.json())
 //app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/createevents', require('./routes/eventRoutes'));
 app.use("/api/users", userRoutes)
+app.use("/api/profile", profileRoutes)
 
 //app.use("/api/events", eventRoutes)
 

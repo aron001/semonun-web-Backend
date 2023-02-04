@@ -2,14 +2,14 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
-
+const Custemerprofile = require('../models/custemerprofileModel')
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { fullname, email, password , phoneno, address, hobby} = req.body
+  const {  role,email,password } = req.body
 
-  if (!fullname || !email || !password||!phoneno||!address) {
+  if (!email || !password) {
     res.status(400)
     throw new Error('Please add all fields')
   }
@@ -19,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400)
-    throw new Error('User already exists')
+    throw new Error ('User already exists')
   }
 
   // Hash password
@@ -28,22 +28,18 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Create user
   const user = await User.create({
-    fullname,
+  
     email,
-    address,
-    phoneno,
-    hobby,
+    role,
     password: hashedPassword,
   })
 
   if (user) {
     res.status(201).json({
       _id: user.id,
-      fullname: user.fullname,
+      role:user.role,
       email: user.email,
-      adress:user.address,
-      phoneno:user.phoneno,
-      hobby:user.hobby,
+  
       token: generateToken(user._id)
     })
   } else {
@@ -64,11 +60,9 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
       _id: user.id,
-      fullname: user.fullname,
+    
       email: user.email,
-      adress:user.address,
-      phoneno:user.phoneno,
-      hobby:user.hobby,
+      role:user.role,
       token: generateToken(user._id),
     })
   } else {
@@ -84,6 +78,30 @@ const getMe = asyncHandler(async (req, res) => {
   res.status(200).json(req.user)
 })
 
+
+//custemer profile
+const CustemerProfile = asyncHandler(async (req, res) => {
+ const puser= req.user.id
+const userprofileExit = await Custemerprofile.findOne({ puser })
+
+  if (userprofileExit) {
+    res.status(400)
+    throw new Error('User profile already exists')
+  }
+  // Create user
+  const custemerprofile = await Custemerprofile.create({
+    
+    user: req.user.id,
+    hobby:req.body.hobby,
+    address:req.body.address,
+    phoneno:req.body.phoneno,
+    fullname:req.body.fullname
+  })
+
+  res.status(200).json(custemerprofile)
+})
+
+
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -95,4 +113,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  CustemerProfile,
 }
