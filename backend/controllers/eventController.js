@@ -4,7 +4,7 @@ const Event = require('../models/eventModel')
 const User = require('../models/userModel')
 
 // @desc    Get goals
-// @route   GET /api/goals
+// @route   GET /api/events
 // @access  Private
 const getEvents = asyncHandler(async (req, res) => {
   const events = await Event.find({ user: req.user.id })
@@ -13,7 +13,7 @@ const getEvents = asyncHandler(async (req, res) => {
 })
 
 // @desc    Set goal
-// @route   POST /api/goals
+// @route   POST /api/events
 // @access  Private
 const setEvent = asyncHandler(async (req, res) => {
   if (!req.body.eventname||!req.body.start||!req.body.end||!req.body.coverpicture||!req.body.location||!req.body.noofticket) {
