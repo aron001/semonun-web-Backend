@@ -23,7 +23,11 @@ const userSchema = mongoose.Schema({
         type:String,
         required:[true, 'please add a phone no']
     },
-    subscribers:{
+    favor:{
+        type:String,
+        required:[false, 'please subscribe']
+    },
+    subscribed:{
         type:Array, 
         default:[]
     },
@@ -31,4 +35,4 @@ const userSchema = mongoose.Schema({
 {
     timestamps:true
 })
-module.exports=mongoose.model('Custemerprofile',userSchema)
+module.exports=mongoose.model('Enduserprofile',userSchema)

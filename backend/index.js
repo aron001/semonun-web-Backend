@@ -4,6 +4,7 @@ const {errorHandler}=require('./middleware/errorMiddleware')
 const mongoose = require('mongoose')
 const userRoutes = require("./routes/userRoutes")
 const profileRoutes = require("./routes/profileRoutes")
+const subscribeRoutes = require("./routes/subscribeRoutes")
 
 //const eventRoutes = require("./routes/eventRoutes")
 //const connectDB=require('./config/db')
@@ -22,7 +23,7 @@ app.use(express.json())
 app.use('/api/createevents', require('./routes/eventRoutes'));
 app.use("/api/users", userRoutes)
 app.use("/api/profile", profileRoutes)
-
+app.use("/api/subscribe", subscribeRoutes)
 //app.use("/api/events", eventRoutes)
 
 app.use(errorHandler)

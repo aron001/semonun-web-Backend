@@ -41,5 +41,12 @@ const isCustemer =  (req, res, next) => {
   }
   next();
 }
+const isEnduser =  (req, res, next) => {
+  if (req.user.role === 1){
+    throw new Error('Not authorized, no enduser')
 
-module.exports = { protect ,isCustemer}
+  }
+  next();
+}
+
+module.exports = { protect ,isCustemer,isEnduser}

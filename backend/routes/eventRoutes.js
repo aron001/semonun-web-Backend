@@ -9,7 +9,9 @@ const {
 
 const { protect } = require('../middleware/authMiddleware')
 const { isCustemer } = require('../middleware/authMiddleware')
-router.route('/').get(protect, isCustemer,getEvents).post(protect, isCustemer,setEvent)
-router.route('/:id').delete(protect,isCustemer, deleteEvent).put(protect, isCustemer,updateEvent)
+router.get('/myevent',protect,isCustemer,getEvents)
+router.post('/createevent',protect, isCustemer,setEvent)
+router.put('/updateevent/:id', protect, isCustemer,updateEvent)
+router.delete('/deleteevent/:id',protect,isCustemer, deleteEvent)
 
 module.exports = router
