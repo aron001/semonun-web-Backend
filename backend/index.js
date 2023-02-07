@@ -5,8 +5,9 @@ const mongoose = require('mongoose')
 const userRoutes = require("./routes/userRoutes")
 const profileRoutes = require("./routes/profileRoutes")
 const subscribeRoutes = require("./routes/subscribeRoutes")
+const catagoryRoutes = require("./routes/catagoryRoutes")
 
-//const eventRoutes = require("./routes/eventRoutes")
+const eventRoutes = require("./routes/eventRoutes")
 //const connectDB=require('./config/db')
 //const port= process.env.Port || 5000
 
@@ -20,11 +21,12 @@ app.use(express.json())
 //app.use(express.urlencoded({extended:false}))
 
 //app.use('/api/users', require('./routes/userRoutes'))
-app.use('/api/createevents', require('./routes/eventRoutes'));
+//app.use('/api/createevents', require('./routes/eventRoutes'));
 app.use("/api/users", userRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/subscribe", subscribeRoutes)
-//app.use("/api/events", eventRoutes)
+app.use("/api/catagory", catagoryRoutes)
+app.use("/api/events", eventRoutes)
 
 app.use(errorHandler)
 
