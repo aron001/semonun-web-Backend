@@ -4,6 +4,10 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const Custemerprofile = require('../models/custemerprofileModel')
 const Enduserprofile = require('../models/enduserprofileModel')
+
+const sendEmail = require("../utils/email");
+
+
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
@@ -27,6 +31,9 @@ const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
+
+  
+
   // Create user
   const user = await User.create({
   
@@ -34,8 +41,18 @@ const registerUser = asyncHandler(async (req, res) => {
     role,
     password: hashedPassword,
   })
+  
+ let token= generateToken(user._id)
 
-  if (user) {
+ const message = `${process.env.BASE_URL}/user/verify/${user.id}/${token}`;
+ await sendEmail(user.email, "Verify Email", message);
+try{
+ res.send("An Email sent to your account please verify");
+}
+ catch (error) {
+  res.status(400).send("An error occured");
+}});
+  /*if (user) {
     res.status(201).json({
       _id: user.id,
       role:user.role,
@@ -46,8 +63,26 @@ const registerUser = asyncHandler(async (req, res) => {
   } else {
     res.status(400)
     throw new Error('Invalid user data')
-  }
-})
+  }*/
+  const verifyUser = asyncHandler(async (req, res) => {
+
+  
+    try {
+      const user = await User.findOne({ _id: req.params.id });
+      if (!user) return res.status(400).send("Invalid link");
+  
+      const token = req.query.token
+      if (!token) return res.status(400).send("Invalid link");
+  
+      await User.updateOne({ _id: user._id, verified: true });
+      
+  
+      res.send("email verified sucessfully");
+    } catch (error) {
+      res.status(400).send("An error occured");
+    }
+  });
+
 
 // @desc    Authenticate a user
 // @route   POST /api/users/login
@@ -71,6 +106,10 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid credentials')
   }
 })
+
+
+
+
 
 // @desc    Get user data
 // @route   GET /api/users/me
@@ -201,7 +240,7 @@ const getEnduserprofiles = asyncHandler(async (req, res) => {
 
 // Generate JWT
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, "abcd123", {
     expiresIn: '3d',
   })
 }
@@ -215,5 +254,6 @@ module.exports = {
   updateCustemerprofile,
   EnduserProfile,
   updateEnduserprofile,
-  getEnduserprofiles
+  getEnduserprofiles,
+  verifyUser
 }
