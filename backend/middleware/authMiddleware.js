@@ -29,7 +29,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
   if (!token) {
     res.status(401)
-    throw new Error('Not authorized, no token')
+    throw new Error(' no token')
   }
 })
 //custemer middleware
@@ -48,5 +48,12 @@ const isEnduser =  (req, res, next) => {
   }
   next();
 }
+/*const isAdmin =  (req, res, next) => {
+  if (req.user.role === 0){
+    throw new Error('Not authorized, no enduser')
 
+  }
+  next();
+}
+*/
 module.exports = { protect ,isCustemer,isEnduser}

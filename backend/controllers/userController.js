@@ -30,13 +30,9 @@ const registerUser = asyncHandler(async (req, res) => {
   // Hash password
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
-
-
-  
-
   // Create user
   const user = await User.create({
-  
+
     email,
     role,
     password: hashedPassword,
@@ -238,6 +234,22 @@ const getEnduserprofiles = asyncHandler(async (req, res) => {
 })
 
 
+
+
+//for admin delete user
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+
+  if (!user) {
+    res.status(400)
+    throw new Error('Event not found')
+  }
+
+  await user.remove()
+
+  res.status(200).json({ id: req.params.id })
+})
+
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, "abcd123", {
@@ -255,5 +267,6 @@ module.exports = {
   EnduserProfile,
   updateEnduserprofile,
   getEnduserprofiles,
-  verifyUser
+  verifyUser,
+  deleteUser
 }

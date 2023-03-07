@@ -3,16 +3,39 @@ const asyncHandler = require('express-async-handler')
 const Event = require('../models/eventModel')
 const User = require('../models/userModel')
 
-// @desc    Get goals
+
+const getallEvents = asyncHandler(async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.body.userId);
+    
+    const userEvent = await Event.find({ userId: currentUser._id});
+    if (custemerprofile.user.toString() !== currentUser) {
+      res.status(401)
+      throw new Error('User not authorized')
+    }
+    const subscribedcustomerEvents = await Promise.all(
+        currentUser.subscribed.map((friendId) => {
+            return Event.find({ user: friendId });
+        })
+    );
+    res.json(userEvent.concat(...subscribedcustomerEvents))
+} catch (err){
+    res.status(500).json(err);
+}
+})
+
+
+// @desc    Get events
 // @route   GET /api/events
 // @access  Private
+
 const getEvents = asyncHandler(async (req, res) => {
   const events = await Event.find({ user: req.user.id })
 
   res.status(200).json(events)
 })
 
-// @desc    Set goal
+// @desc    Set event
 // @route   POST /api/events
 // @access  Private
 const setEvent = asyncHandler(async (req, res) => {
@@ -106,4 +129,5 @@ module.exports = {
   setEvent,
   updateEvent,
   deleteEvent,
+  getallEvents
 }
