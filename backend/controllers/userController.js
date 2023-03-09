@@ -233,8 +233,39 @@ const getEnduserprofiles = asyncHandler(async (req, res) => {
   res.status(200).json(enduserprofiles)
 })
 
+//for admin got all user
+const fetchalluser = asyncHandler(async (req, res) => {
+  User.find((err,val)=>{
+   if(err) {
+     res.status(500)
+   throw new Error('cannot fetch users')
+    
+   
+   } 
+  else {
+   res.status(200).json(val)
+  }
+{    
+}
+ })
+});
 
+// for admin count all users
+const countallusers = asyncHandler(async (req, res) => {
+const users=await  User.find().countDocuments()
+res.status(200).json(users)
 
+});
+
+// for admin no of custemers
+const countcustemerusers = asyncHandler(async (req, res) => {
+  const users=await  User.find()
+  .or([{role:1}])
+  .countDocuments()
+  
+  res.status(200).json(users)
+  
+  });
 
 //for admin delete user
 const deleteUser = asyncHandler(async (req, res) => {
@@ -268,5 +299,9 @@ module.exports = {
   updateEnduserprofile,
   getEnduserprofiles,
   verifyUser,
-  deleteUser
+  deleteUser,
+  fetchalluser,
+  countallusers,
+  countcustemerusers
+
 }

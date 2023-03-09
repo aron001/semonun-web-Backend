@@ -4,7 +4,26 @@ const Event = require('../models/eventModel')
 const User = require('../models/userModel')
 
 
-const getallEvents = asyncHandler(async (req, res) => {
+//fetch all events for doesn't loged in
+const fetchallevents = asyncHandler(async (req, res) => {
+   Event.find((err,val)=>{
+    if(err) {
+      res.status(500)
+    throw new Error('cannot fetch an event')
+     
+    
+    } 
+   else {
+    res.status(200).json(val)
+   }
+{    
+}
+  })
+});
+
+
+//timeline events
+const gettimelineevents = asyncHandler(async (req, res) => {
   try {
     const currentUser = await User.findById(req.body.userId);
     
@@ -95,8 +114,8 @@ const updateEvent = asyncHandler(async (req, res) => {
   res.status(200).json(updatedEvent)
 })
 
-// @desc    Delete goal
-// @route   DELETE /api/goals/:id
+// @desc    Delete Event
+// @route   DELETE /api/events/:id
 // @access  Private
 const deleteEvent = asyncHandler(async (req, res) => {
   const event = await Event.findById(req.params.id)
@@ -113,7 +132,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  // Make sure the logged in user matches the goal user
+  // Make sure the logged in user matches the event user
   if (event.user.toString() !== req.user.id) {
     res.status(401)
     throw new Error('User not authorized')
@@ -124,10 +143,27 @@ const deleteEvent = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.id })
 })
 
+// for admin no of events created
+const countallevents = asyncHandler(async (req, res) => {
+  Event.count((err,val)=>{
+   if(err) {
+    res.send(err)
+  
+   } 
+  else {
+   res.status(200).json(val)
+  }
+{    
+}
+ })
+}); 
+
 module.exports = {
   getEvents,
   setEvent,
   updateEvent,
   deleteEvent,
-  getallEvents
+  gettimelineevents,
+  fetchallevents,
+  countallevents
 }

@@ -48,12 +48,15 @@ const isEnduser =  (req, res, next) => {
   }
   next();
 }
-/*const isAdmin =  (req, res, next) => {
+const isAdmin =  (req, res, next) => {
   if (req.user.role === 0){
-    throw new Error('Not authorized, no enduser')
+    throw new Error('Not authorized, u are end user no admin')
 
+  }
+  else if(req.user.role===1){
+    throw new Error('Not authorized, u are cust not admin')
   }
   next();
 }
-*/
-module.exports = { protect ,isCustemer,isEnduser}
+
+module.exports = { protect ,isCustemer,isEnduser,isAdmin}
