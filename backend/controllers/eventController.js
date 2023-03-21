@@ -21,17 +21,18 @@ const fetchallevents = asyncHandler(async (req, res) => {
   })
 });
 
-
+/*
 //timeline events
 const gettimelineevents = asyncHandler(async (req, res) => {
   try {
-    const currentUser = await User.findById(req.body.userId);
+    //const currentUser = await User.findById(req.body.userId);
     
-    const userEvent = await Event.find({ userId: currentUser._id});
-    if (custemerprofile.user.toString() !== currentUser) {
+    const userEvent = await Event.find({ user: req.user.id});
+    if (custemerprofile.user.toString() !==req.user.id) {
       res.status(401)
       throw new Error('User not authorized')
     }
+    const currentUser=req.user
     const subscribedcustomerEvents = await Promise.all(
         currentUser.subscribed.map((friendId) => {
             return Event.find({ user: friendId });
@@ -41,7 +42,7 @@ const gettimelineevents = asyncHandler(async (req, res) => {
 } catch (err){
     res.status(500).json(err);
 }
-})
+})*/
 
 
 // @desc    Get events
@@ -94,7 +95,7 @@ const updateEvent = asyncHandler(async (req, res) => {
     throw new Error('Event not found')
   }
 
-  const user = await User.findById(req.user.id)
+  //const user = await User.findById(req.user.id)
   // Check for user
   if (!req.user) {
     res.status(401)
@@ -125,7 +126,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
     throw new Error('Event not found')
   }
 
-  const user = await User.findById(req.user.id)
+ // const user = await User.findById(req.user.id)
   // Check for user
   if (!req.user) {
     res.status(401)

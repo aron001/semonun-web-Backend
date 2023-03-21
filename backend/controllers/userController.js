@@ -4,7 +4,8 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const Custemerprofile = require('../models/custemerprofileModel')
 const Enduserprofile = require('../models/enduserprofileModel')
-
+const crypto = import("crypto");
+const Token = require("../models/token");
 const sendEmail = require("../utils/email");
 
 
@@ -12,41 +13,39 @@ const sendEmail = require("../utils/email");
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const {  role,email,password } = req.body
-
-  if (!email || !password) {
-    res.status(400)
-    throw new Error('Please add all fields')
-  }
+  try{
+  
 
   // Check if user exists
-  const userExists = await User.findOne({ email })
+  let user = await User.findOne({ email: req.body.email })
 
-  if (userExists) {
-    res.status(400)
-    throw new Error ('User already exists')
-  }
+  if (user) 
+  return res.status(400).send("User with given email already exist!");
 
+  
   // Hash password
   const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
+  const hashedPassword= await bcrypt.hash(req.body.password, salt);
   // Create user
-  const user = await User.create({
-
-    email,
-    role,
-    password: hashedPassword,
-  })
   
- let token= generateToken(user._id)
+   user = await new User({
+  email: req.body.email,
+  role:req.body.role,
+  password: hashedPassword,
+  }).save();
+  
+ let token= await new Token({
+  userId: user._id,
+  token: crypto.randomBytes(32).toString("hex"),
+}).save();
 
- const message = `${process.env.BASE_URL}/user/verify/${user.id}/${token}`;
+ const message = `${process.env.BASE_URL}/user/verify/${user.id}/${token.token}`;
  await sendEmail(user.email, "Verify Email", message);
-try{
+
  res.send("An Email sent to your account please verify");
-}
+  }
  catch (error) {
-  res.status(400).send("An error occured");
+  res.status(400).send("An error occured to send verification code");
 }});
   /*if (user) {
     res.status(201).json({
@@ -65,13 +64,16 @@ try{
   
     try {
       const user = await User.findOne({ _id: req.params.id });
-      if (!user) return res.status(400).send("Invalid link");
+      if (!user) return res.status(400).send("Invalid link bcoz of userid");
   
-      const token = req.query.token
-      if (!token) return res.status(400).send("Invalid link");
+      const token = await Token.findOne({
+        userId: user._id,
+        token: req.params.token,
+      });
+      if (!token) return res.status(400).send("Invalid link bcoz of token");
   
       await User.updateOne({ _id: user._id, verified: true });
-      
+      await Token.findByIdAndRemove(token._id);
   
       res.send("email verified sucessfully");
     } catch (error) {
@@ -152,7 +154,7 @@ const updateCustemerprofile = asyncHandler(async (req, res) => {
     throw new Error('custemer profile not found')
   }
 
-  const user = await User.findById(req.user.id)
+  //const user = await User.findById(req.user.id)
   // Check for user
   if (!req.user) {
     res.status(401)
@@ -206,7 +208,7 @@ const updateEnduserprofile = asyncHandler(async (req, res) => {
     throw new Error('Enduser profile not found')
   }
 
-  const user = await User.findById(req.user.id)
+  //const user = await User.findById(req.user.id)
   // Check for user
   if (!req.user) {
     res.status(401)

@@ -8,7 +8,7 @@ const Enduserprofile = require('../models/enduserprofileModel')
 
 const subscribe = asyncHandler(async (req, res) => {
     //router.put("/:id/follow", async (req,res)=>{
-        if (req.body.userId !== req.params.id){
+        if (req.user.id !== req.params.id){
             try{
                 
                 const user= await Custemerprofile.findById(req.params.id);
@@ -33,7 +33,7 @@ const subscribe = asyncHandler(async (req, res) => {
 
     const unsubscribe = asyncHandler(async (req, res) => {
         //router.put("/:id/follow", async (req,res)=>{
-            if (req.body.userId !== req.params.id){
+            if (req.user.id !== req.params.id){
                 try{
                     
                     const user= await Custemerprofile.findById(req.params.id);

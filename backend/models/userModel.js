@@ -9,6 +9,8 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type:String,
+        min:6,
+        max:255,
         required:[true, 'please add a password']
     },
     role: {
