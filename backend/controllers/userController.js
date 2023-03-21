@@ -12,6 +12,48 @@ const sendEmail = require("../utils/email");
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
+
+const registerUser = asyncHandler(async (req, res) => {
+  const { role, email, password } = req.body
+
+  if (!role || !email || !password) {
+    res.status(400)
+    throw new Error('Please add all fields')
+  }
+
+  // Check if user exists
+  const userExists = await User.findOne({ email })
+
+  if (userExists) {
+    res.status(400)
+    throw new Error('User already exists')
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+
+  // Create user
+  const user = await User.create({
+    role,
+    email,
+    password: hashedPassword,
+  })
+
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      name: user.role,
+      email: user.email,
+      token: generateToken(user._id),
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid user data')
+  }
+})
+
+/*
 const registerUser = asyncHandler(async (req, res) => {
   try{
   
@@ -46,19 +88,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
  catch (error) {
   res.status(400).send("An error occured to send verification code");
-}});
-  /*if (user) {
-    res.status(201).json({
-      _id: user.id,
-      role:user.role,
-      email: user.email,
+}}); */
   
-      token: generateToken(user._id)
-    })
-  } else {
-    res.status(400)
-    throw new Error('Invalid user data')
-  }*/
   const verifyUser = asyncHandler(async (req, res) => {
 
   

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {
   getEvents,
-  gettimelineevents,
+  
   setEvent,
   updateEvent,
   deleteEvent,
@@ -13,7 +13,7 @@ const {
 const { protect ,isEnduser,isAdmin} = require('../middleware/authMiddleware')
 const { isCustemer } = require('../middleware/authMiddleware')
 router.get('/myevent',protect,isCustemer,getEvents)
-router.get('/timelinevents',protect,isEnduser,gettimelineevents)
+//router.get('/timelinevents',protect,isEnduser,gettimelineevents)
 router.get('/fetchallevents',fetchallevents)
 router.post('/createevent',protect, isCustemer,setEvent)
 router.put('/updateevent/:id', protect, isCustemer,updateEvent)

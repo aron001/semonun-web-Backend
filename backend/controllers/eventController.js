@@ -164,7 +164,7 @@ module.exports = {
   setEvent,
   updateEvent,
   deleteEvent,
-  gettimelineevents,
+  
   fetchallevents,
   countallevents
 }
